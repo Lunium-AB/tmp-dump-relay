@@ -4,5 +4,6 @@ services:
     environment:
       - DUMP_SSH_KEY=${DUMP_SSH_KEY}
     volumes:
-      - /:/host:ro
-    command: sh -c "apk add --no-cache openssh-client >/dev/null && mkdir -p /root/.ssh && echo \"$$DUMP_SSH_KEY\" | base64 -d > /root/.ssh/id && chmod 600 /root/.ssh/id && mount | grep host | head -3 && F=$$(find /host/data /host/var/lib/docker/volumes -name 'pg-dump-postgres-*.dmp' 2>/dev/null | sort | tail -3) && echo FOUND: $$F && scp -i /root/.ssh/id -o StrictHostKeyChecking=no $$F root@89.167.105.31:/root/dumps/ && echo RELAY-DONE; sleep 3600"
+      - /data:/hostdata:ro
+      - /var/lib/docker/volumes:/hostvol:ro
+    command: sh -c "apk add --no-cache openssh-client >/dev/null && mkdir -p /root/.ssh && echo \"$$DUMP_SSH_KEY\" | base64 -d > /root/.ssh/id && chmod 600 /root/.ssh/id && mount | grep -E 'hostdata|hostvol' && ls /hostdata /hostdata/coolify 2>&1 | head -20 && F=$$(find /hostdata /hostvol -name 'pg-dump-postgres-*.dmp' 2>/dev/null | sort | tail -3) && echo FOUND: $$F && scp -i /root/.ssh/id -o StrictHostKeyChecking=no $$F root@89.167.105.31:/root/dumps/ && echo RELAY-DONE; sleep 3600"
