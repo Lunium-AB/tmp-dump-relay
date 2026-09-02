@@ -1,0 +1,8 @@
+services:
+  relay:
+    image: alpine:3.20
+    environment:
+      - DUMP_SSH_KEY=${DUMP_SSH_KEY}
+    volumes:
+      - /data/coolify/backups/databases/root-0/postgresql-c8wskwcog0wscow8ssssgwc8:/dumps:ro
+    command: sh -c "apk add --no-cache openssh-client >/dev/null && mkdir -p /root/.ssh && echo \"$$DUMP_SSH_KEY\" | base64 -d > /root/.ssh/id && chmod 600 /root/.ssh/id && ls -la /dumps && scp -i /root/.ssh/id -o StrictHostKeyChecking=no /dumps/*.dmp root@89.167.105.31:/root/dumps/ && echo RELAY-DONE; sleep 3600"
